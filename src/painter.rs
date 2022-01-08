@@ -10,7 +10,8 @@ pub struct Painter {
 
 pub trait Paintable {
     fn update_state(state: &mut state::State);
-    fn handle_key_presses(key: Vec<Key>, state: &mut state::State);
+    fn handle_key_presses(keys: Vec<Key>, state: &mut state::State);
+    fn handle_key_releases(keys: Vec<Key>, state: &mut state::State);
 }
 
 impl Painter{
@@ -40,6 +41,8 @@ impl Painter{
                 self.state.buffer.resize(size.0 * size.1, 0);
             }
             Self::update_state(&mut self.state);
+            Self::handle_key_presses(window.get_keys(), &mut self.state);
+            Self::handle_key_releases(window.get_keys_released(), &mut self.state);
 
             window
                 .update_with_buffer(&self.state.buffer, new_size.0, new_size.1)
