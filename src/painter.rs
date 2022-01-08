@@ -39,7 +39,7 @@ impl Painter{
                 size = new_size;
                 self.state.buffer.resize(size.0 * size.1, 0);
             }
-            self.update_state(self.state);
+            Self::update_state(&mut self.state);
 
             window
                 .update_with_buffer(&self.state.buffer, new_size.0, new_size.1)

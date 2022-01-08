@@ -32,7 +32,7 @@ fn main() {
     let buffer: Vec<u32> = Vec::with_capacity(WIDTH * HEIGHT);
     let mut state = state::State { buffer, increment: 0 };
 
-    let painter = painter::Painter {state, width: WIDTH, height: HEIGHT};
+    let mut painter = painter::Painter {state, width: WIDTH, height: HEIGHT};
 
     painter.draw_window();
 }
