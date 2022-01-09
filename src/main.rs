@@ -67,10 +67,10 @@ fn main() {
     let hist_buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
     let size = Point2{x: WIDTH as u32, y: HEIGHT as u32};
     let state = state::State { frame: frame::Frame{buffer, size },
-                                     histogram: frame::Frame{buffer: hist_buffer, size },
-                                     increment: 0 };
+                                         histogram: frame::Frame{buffer: hist_buffer, size },
+                                         increment: 0 };
 
-    let mut painter = painter::Painter {state, width: WIDTH, height: HEIGHT};
+    let mut painter = painter::Painter {state, size: Point2 { x: WIDTH, y: HEIGHT }};
 
     painter.draw_window();
 }

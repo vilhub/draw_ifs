@@ -1,11 +1,10 @@
 use minifb::{ScaleMode, Window, WindowOptions, Key};
 
-use crate::{state};
+use crate::{state, algebra::Point2};
 
 pub struct Painter {
     pub state: state::State,
-    pub width: usize,
-    pub height: usize
+    pub size: Point2<usize>
 }
 
 pub trait Paintable {
@@ -19,8 +18,8 @@ impl Painter{
 
         let mut window = Window::new(
             "Press ESC to exit",
-            self.width,
-            self.height,
+            self.size.x,
+            self.size.y,
             WindowOptions {
                 resize: true,
                 scale_mode: ScaleMode::UpperLeft,
