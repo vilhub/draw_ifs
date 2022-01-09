@@ -39,8 +39,8 @@ impl painter::Paintable for painter::Painter {
         
         compute_ifs(&mut state.histogram);
         for (i, j) in state.frame.buffer.iter_mut().zip(state.histogram.buffer.iter()) {
-            let intensity = *j;
-            *i = (intensity & 0xFF) << 16 | (intensity & 0xFF) << 8 | (intensity & 0xFF);
+            let intensity = std::cmp::min(*j, 0xFF);
+            *i = intensity << 16 | intensity << 8 | intensity;
         }
     }
     
