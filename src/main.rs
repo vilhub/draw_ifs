@@ -4,6 +4,8 @@ use minifb::Key;
 
 mod painter;
 mod state;
+mod frame;
+mod algebra;
 
 const WIDTH: usize = 640;
 const HEIGHT: usize = 640;
