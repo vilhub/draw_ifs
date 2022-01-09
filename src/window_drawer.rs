@@ -2,7 +2,7 @@ use minifb::{ScaleMode, Window, WindowOptions, Key};
 
 use crate::{ifs_computer::IFSComputer, WIDTH, HEIGHT, frame::Frame, Point2};
 
-pub fn draw_window(ifs_computer: &mut IFSComputer) {
+pub fn draw_window(mut ifs_computer: IFSComputer) {
 
     let mut window = Window::new(
         "Press ESC to exit",

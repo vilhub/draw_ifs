@@ -17,6 +17,6 @@ fn main() {
     let hist_buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
     let size = Point2{x: WIDTH as u32, y: HEIGHT as u32};
 
-    let mut ifs_computer = IFSComputer { histogram: frame::Frame{buffer: hist_buffer, size } };
-    draw_window(&mut ifs_computer);
+    let ifs_computer = IFSComputer { histogram: frame::Frame{buffer: hist_buffer, size } };
+    draw_window(ifs_computer);
 }
