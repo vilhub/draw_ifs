@@ -1,5 +1,7 @@
 use std::ops;
 
+use rand::{prelude::Distribution, distributions::Standard, Rng};
+
 #[derive(Debug, Copy, Clone)]
 pub struct Point2<T> {
     pub x: T,
@@ -14,6 +16,16 @@ pub struct Matrix2<T> {
     pub b: T,
     pub c: T,
     pub d: T
+}
+
+impl<T> Distribution<Point2<T>> for Standard where
+    Standard: Distribution<T> {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Point2<T> {
+        Point2 {
+            x: rng.gen(),
+            y: rng.gen()
+        }
+    }
 }
 
 impl Point2<u32> {
@@ -36,11 +48,27 @@ impl<T: ops::Add<Output = T>> ops::Add for Point2<T> {
     }
 }
 
+impl<T: ops::Add<Output = T> + Copy + Clone> ops::Add<T> for Point2<T> {
+    type Output = Self;
+
+    fn add(self, rhs: T) -> Point2<T> {
+        Point2 { x: self.x + rhs, y: self.y + rhs }
+    }
+}
+
 impl<T: ops::Sub<Output = T>> ops::Sub for Point2<T> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Point2<T> {
         Point2 { x: self.x - rhs.x, y: self.y - rhs.y }
+    }
+}
+
+impl<T: ops::Sub<Output = T> + Copy + Clone> ops::Sub<T> for Point2<T> {
+    type Output = Self;
+
+    fn sub(self, rhs: T) -> Point2<T> {
+        Point2 { x: self.x - rhs, y: self.y - rhs }
     }
 }
 

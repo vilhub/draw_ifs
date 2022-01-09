@@ -16,8 +16,9 @@ const DOMAIN: frame::Domain = frame::Domain { min: Point2{x: -1., y:-1.},
                                               max: Point2{x: 1., y: 1.} };
 
 pub fn compute_ifs(frame: &mut frame::Frame) {
-    let mut iter_point = Point2{ x: 0.1, y: 0.1 };
     let mut rng = rand::thread_rng();
+    let mut iter_point = rng.gen();
+    iter_point = (iter_point - 0.5) * 2.;
     for i in 1..10000 {
         match rng.gen_range(1..=3) { // Optimize sampling
             1 => iter_point = (iter_point + Point2{ x: DOMAIN.min.x, y: DOMAIN.min.y }) / 2.,
