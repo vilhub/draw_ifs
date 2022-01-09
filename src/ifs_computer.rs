@@ -26,10 +26,6 @@ impl IFSComputer {
             }
         }
     }
-
-    pub fn update_state(&mut self) {
-        self.compute_ifs();
-    }
     
     pub fn handle_key_presses(&self, keys: Vec<Key>) {        
         keys.iter().for_each(|key| match key {

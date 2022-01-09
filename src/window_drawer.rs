@@ -30,7 +30,7 @@ pub fn draw_window(ifs_computer: &mut IFSComputer) {
             size = new_size;
             frame.buffer.resize(size.0 * size.1, 0);
         }
-        ifs_computer.update_state();
+        ifs_computer.compute_ifs();
         ifs_computer.handle_key_presses(window.get_keys());
         ifs_computer.handle_key_releases(window.get_keys_released());
         ifs_computer.draw_on_frame(&mut frame);
