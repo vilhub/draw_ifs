@@ -1,4 +1,7 @@
+use crate::frame::Frame;
+
 pub struct State {
-    pub buffer: Vec<u32>,
+    pub frame: Frame,
+    pub histogram: Frame,
     pub increment: u32
 }

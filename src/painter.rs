@@ -38,14 +38,14 @@ impl Painter{
             let new_size = (window.get_size().0, window.get_size().1);
             if new_size != size {
                 size = new_size;
-                self.state.buffer.resize(size.0 * size.1, 0);
+                self.state.frame.buffer.resize(size.0 * size.1, 0);
             }
             Self::update_state(&mut self.state);
             Self::handle_key_presses(window.get_keys(), &mut self.state);
             Self::handle_key_releases(window.get_keys_released(), &mut self.state);
 
             window
-                .update_with_buffer(&self.state.buffer, new_size.0, new_size.1)
+                .update_with_buffer(&self.state.frame.buffer, new_size.0, new_size.1)
                 .unwrap();
         }
     }

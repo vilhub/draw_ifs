@@ -2,18 +2,18 @@ use std::ops;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Point2<T> {
-    x: T,
-    y: T
+    pub x: T,
+    pub y: T
 }
 
 #[derive(Debug, Copy, Clone)]
 pub struct Matrix2<T> {
     // Matrix |a, b|
     //        |c, d|
-    a: T,
-    b: T,
-    c: T,
-    d: T
+    pub a: T,
+    pub b: T,
+    pub c: T,
+    pub d: T
 }
 
 impl Point2<u32> {
@@ -44,7 +44,7 @@ impl<T: ops::Sub<Output = T>> ops::Sub for Point2<T> {
     }
 }
 
-impl<T: ops::Mul<Output = T>> ops::Mul for Point2<T> {
+impl<T: ops::Mul<Output = T>> ops::Mul<Point2<T>> for Point2<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Point2<T> {
@@ -52,11 +52,27 @@ impl<T: ops::Mul<Output = T>> ops::Mul for Point2<T> {
     }
 }
 
-impl<T: ops::Div<Output = T>> ops::Div for Point2<T> {
+impl<T: ops::Mul<Output = T> + Copy + Clone> ops::Mul<T> for Point2<T> {
+    type Output = Self;
+
+    fn mul(self, rhs: T) -> Point2<T> {
+        Point2 { x: self.x * rhs, y: self.y * rhs }
+    }
+}
+
+impl<T: ops::Div<Output = T>> ops::Div<Point2<T>> for Point2<T> {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Point2<T> {
         Point2 { x: self.x / rhs.x, y: self.y / rhs.y }
+    }
+}
+
+impl<T: ops::Div<Output = T> + Copy + Clone> ops::Div<T> for Point2<T> {
+    type Output = Self;
+
+    fn div(self, rhs: T) -> Point2<T> {
+        Point2 { x: self.x / rhs, y: self.y / rhs }
     }
 }
 
