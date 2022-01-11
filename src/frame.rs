@@ -12,6 +12,7 @@ pub struct Domain {
 }
 
 impl Frame {
+    #[allow(dead_code)]
     pub fn to_domain(&self, point: Point2<u32>, domain: Domain) -> Point2<f32> {
         let normalized_point = point.to_f32() / self.size.to_f32(); // In domain [0,1]^2
         normalized_point * (domain.max - domain.min) + domain.min 
