@@ -3,7 +3,7 @@ use std::sync::{Mutex};
 use minifb::Key;
 use rand::{Rng, distributions::Uniform, distributions::Distribution};
 
-use crate::{frame::Frame, algebra::Point2, DOMAIN};
+use crate::{frame::Frame, algebra::Point2, constants::DOMAIN};
 
 
 pub struct IFSComputer {

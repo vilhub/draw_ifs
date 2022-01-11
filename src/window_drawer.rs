@@ -3,7 +3,7 @@ use std::{thread, sync::{Arc, Mutex}};
 use minifb::{ScaleMode, Window, WindowOptions, Key};
 
 use crate::{ifs_computer::{IFSComputer, handle_key_presses, handle_key_releases, draw_on_frame},
-WIDTH, HEIGHT, frame::Frame, Point2};
+frame::Frame, Point2, constants::WIDTH, constants::HEIGHT};
 
 pub fn draw_window(ifs_computer: IFSComputer) {
 
