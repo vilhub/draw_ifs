@@ -1,9 +1,8 @@
 use algebra::Point2;
-use ifs_computer::IFSComputer;
 use window_drawer::draw_window;
-use function_catalog::get_functions;
+use ifs_catalog::get_ifs_preset;
 
-mod function_catalog;
+mod ifs_catalog;
 mod constants;
 mod window_drawer;
 mod frame;
@@ -12,6 +11,6 @@ mod ifs_computer;
 
 fn main() {
 
-    let ifs_computer = IFSComputer { functions: get_functions("sierpinski") };
+    let ifs_computer = get_ifs_preset("test");
     draw_window(ifs_computer);
 }

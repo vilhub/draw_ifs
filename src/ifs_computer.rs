@@ -1,13 +1,14 @@
 use std::sync::{Mutex};
 
 use minifb::Key;
-use rand::{Rng, distributions::Uniform, distributions::Distribution};
+use rand::{Rng, distributions::{Distribution, WeightedIndex}};
 
 use crate::{frame::Frame, algebra::Point2, constants::DOMAIN};
 
 
 pub struct IFSComputer {
-    pub functions: Vec<fn(Point2<f32>) -> Point2<f32>>
+    pub functions: Vec<fn(Point2<f32>) -> Point2<f32>>,
+    pub weights: Vec<f32>
 }
 
 impl IFSComputer {
@@ -15,9 +16,9 @@ impl IFSComputer {
         let mut rng = rand::thread_rng();
         let mut iter_point = rng.gen();
         iter_point = (iter_point - 0.5) * 2.;
-        let between = Uniform::from(0..self.functions.len());
+        let dist = WeightedIndex::new(&self.weights).unwrap();
         for i in 1..10000000 {
-            let rand_num = between.sample(&mut rng);
+            let rand_num = dist.sample(&mut rng);
             iter_point = self.functions[rand_num](iter_point);
             if i > 20 {
                 let mut histogram_guard = histogram.lock().unwrap();
