@@ -17,7 +17,7 @@ impl IFSComputer {
         let mut iter_point = rng.gen();
         iter_point = (iter_point - 0.5) * 2.;
         let dist = WeightedIndex::new(&self.weights).unwrap();
-        for i in 1..10000000 {
+        for i in 1..1000000000 {
             let rand_num = dist.sample(&mut rng);
             iter_point = self.functions[rand_num](iter_point);
             if i > 20 {
