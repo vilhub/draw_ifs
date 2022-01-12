@@ -11,6 +11,6 @@ mod ifs_computer;
 
 fn main() {
 
-    let ifs_computer = get_ifs_preset("test");
+    let ifs_computer = get_ifs_preset("fern");
     draw_window(ifs_computer);
 }
