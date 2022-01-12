@@ -24,7 +24,7 @@ impl Frame {
     }
 
     pub fn increment_pixel(&mut self, point: Point2<u32>) {
-        let pixel_id = point.y * self.size.y + point.x;
+        let pixel_id = point.y * self.size.x + point.x;
         if let Some(pixel) = self.buffer.get_mut(pixel_id as usize) {
             *pixel += 1;
         }
