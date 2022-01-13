@@ -1,14 +1,16 @@
-use std::sync::{Mutex};
+use std::sync::Mutex;
 
 use minifb::Key;
-use rand::{Rng, distributions::{Distribution, WeightedIndex}};
+use rand::{
+    distributions::{Distribution, WeightedIndex},
+    Rng,
+};
 
-use crate::{frame::Frame, algebra::Point2, constants::DOMAIN};
-
+use crate::{algebra::Point2, constants::DOMAIN, frame::Frame};
 
 pub struct IFSComputer {
     pub functions: Vec<fn(Point2<f32>) -> Point2<f32>>,
-    pub weights: Vec<f32>
+    pub weights: Vec<f32>,
 }
 
 impl IFSComputer {
@@ -28,8 +30,8 @@ impl IFSComputer {
         }
     }
 }
-    
-pub fn handle_key_presses(keys: Vec<Key>) {        
+
+pub fn handle_key_presses(keys: Vec<Key>) {
     keys.iter().for_each(|key| match key {
         Key::W => println!("holding w!"),
         Key::T => println!("holding t!"),
@@ -37,7 +39,7 @@ pub fn handle_key_presses(keys: Vec<Key>) {
     });
 }
 
-pub fn handle_key_releases(keys: Vec<Key>) {        
+pub fn handle_key_releases(keys: Vec<Key>) {
     keys.iter().for_each(|key| match key {
         Key::W => println!("released w!"),
         Key::T => println!("released t!"),
@@ -45,9 +47,12 @@ pub fn handle_key_releases(keys: Vec<Key>) {
     });
 }
 
-pub fn draw_on_frame(current_frame: &mut Frame, histogram: &Frame){
+pub fn draw_on_frame(current_frame: &mut Frame, histogram: &Frame) {
     for (i, j) in current_frame.buffer.iter_mut().zip(histogram.buffer.iter()) {
-        let intensity = std::cmp::min(*j, 0xFF);
+        let histogram_value = *j;
+        let scaling: f32 = 255.;
+        let normalized_value = ((1 + histogram_value) as f32).log2() * scaling / scaling.log2();
+        let intensity = std::cmp::min(normalized_value as u32, 0xFF);
         *i = intensity << 16 | intensity << 8 | intensity;
     }
 }

@@ -1,4 +1,8 @@
-use crate::{algebra::{Point2, Matrix2}, constants::DOMAIN, ifs_computer::IFSComputer};
+use crate::{
+    algebra::{Matrix2, Point2},
+    constants::DOMAIN,
+    ifs_computer::IFSComputer,
+};
 
 
 fn f1(x: Point2<f32>) -> Point2<f32> {(x + Point2{ x: DOMAIN.min.x, y: DOMAIN.min.y }) / 2.}

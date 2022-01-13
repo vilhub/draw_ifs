@@ -1,12 +1,19 @@
-use std::{thread, sync::{Arc, Mutex}};
+use std::{
+    sync::{Arc, Mutex},
+    thread,
+};
 
-use minifb::{ScaleMode, Window, WindowOptions, Key};
+use minifb::{Key, ScaleMode, Window, WindowOptions};
 
-use crate::{ifs_computer::{IFSComputer, handle_key_presses, handle_key_releases, draw_on_frame},
-frame::Frame, Point2, constants::WIDTH, constants::HEIGHT};
+use crate::{
+    constants::HEIGHT,
+    constants::WIDTH,
+    frame::Frame,
+    ifs_computer::{draw_on_frame, handle_key_presses, handle_key_releases, IFSComputer},
+    Point2,
+};
 
 pub fn draw_window(ifs_computer: IFSComputer) {
-
     let mut window = Window::new(
         "Press ESC to exit",
         WIDTH,
@@ -21,15 +28,25 @@ pub fn draw_window(ifs_computer: IFSComputer) {
 
     // Limit to max ~60 fps update rate
     window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
-    
-    let mut draw_frame = Frame{ buffer: vec![0; WIDTH * HEIGHT],
-        size: Point2 { x: WIDTH as u32, y: HEIGHT as u32 } };
-    let compute_frame = Frame{ buffer: vec![0; WIDTH * HEIGHT],
-        size: Point2 { x: WIDTH as u32, y: HEIGHT as u32 } };
+
+    let mut draw_frame = Frame {
+        buffer: vec![0; WIDTH * HEIGHT],
+        size: Point2 {
+            x: WIDTH as u32,
+            y: HEIGHT as u32,
+        },
+    };
+    let compute_frame = Frame {
+        buffer: vec![0; WIDTH * HEIGHT],
+        size: Point2 {
+            x: WIDTH as u32,
+            y: HEIGHT as u32,
+        },
+    };
 
     let mut size = (WIDTH, HEIGHT);
     let histogram = Mutex::new(compute_frame);
-                             
+
     let compute_histogram = Arc::new(histogram);
     let draw_histogram = compute_histogram.clone();
     let _handle = thread::spawn(move || {
