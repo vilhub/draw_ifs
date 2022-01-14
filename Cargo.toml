@@ -8,6 +8,5 @@ edition = "2021"
 [dependencies]
 minifb = "0.20.0"
 rand = "0.8.4"
-
-[profile.release]
-debug = true
+imageproc = "0.22.0"
+image = "0.23.14"
