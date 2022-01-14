@@ -26,8 +26,8 @@ pub fn draw_window(ifs_computer: IFSComputer) {
     )
     .expect("Unable to create window");
 
-    // Limit to max ~60 fps update rate
-    window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
+    // Limit to max ~60 fps update rate => 16600
+    window.limit_update_rate(Some(std::time::Duration::from_micros(33200)));
 
     let mut draw_frame = Frame {
         buffer: vec![0; WIDTH * HEIGHT],
