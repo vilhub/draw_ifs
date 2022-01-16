@@ -7,7 +7,7 @@ use minifb::{Key, ScaleMode, Window, WindowOptions};
 
 use crate::{
     constants::HEIGHT,
-    constants::WIDTH,
+    constants::{WIDTH, SUPERSAMPLING},
     frame::Frame,
     ifs_computer::{draw_on_frame, handle_key_presses, handle_key_releases, IFSComputer},
     Point2,
@@ -37,10 +37,10 @@ pub fn draw_window(ifs_computer: IFSComputer) {
         },
     };
     let compute_frame = Frame {
-        buffer: vec![0; WIDTH * HEIGHT],
+        buffer: vec![0; SUPERSAMPLING as usize * SUPERSAMPLING as usize * WIDTH * HEIGHT],
         size: Point2 {
-            x: WIDTH as u32,
-            y: HEIGHT as u32,
+            x: SUPERSAMPLING * WIDTH as u32,
+            y: SUPERSAMPLING * HEIGHT as u32,
         },
     };
 

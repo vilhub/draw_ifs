@@ -7,7 +7,11 @@ use rand::{
     Rng,
 };
 
-use crate::{algebra::Point2, constants::DOMAIN, frame::Frame};
+use crate::{
+    algebra::Point2,
+    constants::{DOMAIN, SUPERSAMPLING},
+    frame::{id_to_xy, xy_to_id, Frame},
+};
 
 pub struct IFSComputer {
     pub functions: Vec<fn(Point2<f32>) -> Point2<f32>>,
@@ -51,6 +55,7 @@ pub fn handle_key_releases(keys: Vec<Key>) {
 pub fn draw_on_frame(current_frame: &mut Frame, histogram: &Frame) {
     const USE_IMAGE_BUFFER: bool = false;
     if USE_IMAGE_BUFFER {
+        // Branch only kept as a reference to see how to manipulate images with imageproc
         let mut temp_image = GrayImage::new(histogram.size.x, histogram.size.y);
         for (i, j) in histogram.buffer.iter().enumerate() {
             let histogram_value = *j;
@@ -69,12 +74,25 @@ pub fn draw_on_frame(current_frame: &mut Frame, histogram: &Frame) {
             *i = pixel << 16 | pixel << 8 | pixel;
         }
     } else {
-        for (i, j) in current_frame.buffer.iter_mut().zip(histogram.buffer.iter()) {
-            let histogram_value = *j;
+        for (i_draw_pixel, draw_pixel) in current_frame.buffer.iter_mut().enumerate() {
+            // Resize SUPERSAMPLING x SUPERSAMPLING pixel squares to one pixel
+            let mut pixel_average = 0;
+            let (draw_x, draw_y) = id_to_xy(i_draw_pixel as u32, current_frame.size.x);
+            for k in 0..SUPERSAMPLING {
+                for l in 0..SUPERSAMPLING {
+                    let (super_x, super_y) =
+                        (SUPERSAMPLING * draw_x + k, SUPERSAMPLING * draw_y + l);
+                    let super_id = xy_to_id(super_x, super_y, histogram.size.x);
+                    let pixel_value = histogram.buffer.get(super_id as usize);
+                    pixel_average += pixel_value.unwrap();
+                }
+            }
+            pixel_average /= SUPERSAMPLING * SUPERSAMPLING;
+            let histogram_value = pixel_average;
             let scaling: f32 = 255.;
             let normalized_value = ((1 + histogram_value) as f32).log2() * scaling / scaling.log2();
             let intensity = std::cmp::min(normalized_value as u32, 0xFF);
-            *i = intensity << 16 | intensity << 8 | intensity;
+            *draw_pixel = intensity << 16 | intensity << 8 | intensity;
         }
     }
 }
