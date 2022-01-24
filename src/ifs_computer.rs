@@ -9,8 +9,8 @@ use rand::{
 
 use crate::{
     algebra::Point2,
-    constants::{DOMAIN, SUPERSAMPLING},
-    frame::{id_to_xy, xy_to_id, Frame},
+    constants::{DOMAIN, SUPERSAMPLING, PALETTE},
+    frame::{id_to_xy, xy_to_id, Frame, Pixel},
 };
 
 pub struct IFSComputer {
@@ -19,7 +19,7 @@ pub struct IFSComputer {
 }
 
 impl IFSComputer {
-    pub fn compute_ifs(&self, histogram: &Mutex<Frame>) {
+    pub fn compute_ifs(&self, histogram: &Mutex<Frame<Pixel>>) {
         let mut rng = rand::thread_rng();
         let mut iter_point = rng.gen();
         iter_point = (iter_point - 0.5) * 2.;
@@ -30,7 +30,7 @@ impl IFSComputer {
             if i > 20 {
                 let mut histogram_guard = histogram.lock().unwrap();
                 let frame_point = histogram_guard.from_domain(iter_point, DOMAIN);
-                histogram_guard.increment_pixel(frame_point);
+                histogram_guard.increment_pixel(frame_point, PALETTE[rand_num]);
             }
         }
     }
@@ -52,13 +52,13 @@ pub fn handle_key_releases(keys: Vec<Key>) {
     });
 }
 
-pub fn draw_on_frame(current_frame: &mut Frame, histogram: &Frame) {
+pub fn draw_on_frame(current_frame: &mut Frame<u32>, histogram: &Frame<Pixel>) {
     const USE_IMAGE_BUFFER: bool = false;
     if USE_IMAGE_BUFFER {
         // Branch only kept as a reference to see how to manipulate images with imageproc
         let mut temp_image = GrayImage::new(histogram.size.x, histogram.size.y);
         for (i, j) in histogram.buffer.iter().enumerate() {
-            let histogram_value = *j;
+            let histogram_value = j.a;
             let scaling: f32 = 255.;
             let normalized_value = ((1 + histogram_value) as f32).log2() * scaling / scaling.log2();
             let intensity = std::cmp::min(normalized_value as u32, 0xFF);
@@ -76,7 +76,7 @@ pub fn draw_on_frame(current_frame: &mut Frame, histogram: &Frame) {
     } else {
         for (i_draw_pixel, draw_pixel) in current_frame.buffer.iter_mut().enumerate() {
             // Resize SUPERSAMPLING x SUPERSAMPLING pixel squares to one pixel
-            let mut pixel_average = 0;
+            let mut pixel_average = Pixel {r: 0, g: 0, b: 0, a: 0};
             let (draw_x, draw_y) = id_to_xy(i_draw_pixel as u32, current_frame.size.x);
             for k in 0..SUPERSAMPLING {
                 for l in 0..SUPERSAMPLING {
@@ -84,15 +84,20 @@ pub fn draw_on_frame(current_frame: &mut Frame, histogram: &Frame) {
                         (SUPERSAMPLING * draw_x + k, SUPERSAMPLING * draw_y + l);
                     let super_id = xy_to_id(super_x, super_y, histogram.size.x);
                     let pixel_value = histogram.buffer.get(super_id as usize);
-                    pixel_average += pixel_value.unwrap();
+                    pixel_average = pixel_average + *pixel_value.unwrap();
                 }
             }
-            pixel_average /= SUPERSAMPLING * SUPERSAMPLING;
-            let histogram_value = pixel_average;
-            let scaling: f32 = 255.;
-            let normalized_value = ((1 + histogram_value) as f32).log2() * scaling / scaling.log2();
-            let intensity = std::cmp::min(normalized_value as u32, 0xFF);
-            *draw_pixel = intensity << 16 | intensity << 8 | intensity;
+            pixel_average = pixel_average / (SUPERSAMPLING * SUPERSAMPLING);
+            let histogram_value = pixel_average.a;
+            let max_value: f32 = 255.;
+            let scaling_factor = ((1 + histogram_value) as f32).log2() / max_value.log2();
+            let r = (pixel_average.r as f32 / histogram_value as f32 * scaling_factor) as u32;
+            let g = (pixel_average.g as f32 / histogram_value as f32 * scaling_factor) as u32;
+            let b = (pixel_average.b as f32 / histogram_value as f32 * scaling_factor) as u32;
+            let intensity_r = std::cmp::min(r, 0xFF);
+            let intensity_g = std::cmp::min(g, 0xFF);
+            let intensity_b = std::cmp::min(b, 0xFF);
+            *draw_pixel = intensity_r << 16 | intensity_g << 8 | intensity_b;
         }
     }
 }
