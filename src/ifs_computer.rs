@@ -27,7 +27,7 @@ impl IFSComputer {
         for i in 1..1000000000 {
             let rand_num = dist.sample(&mut rng);
             iter_point = self.functions[rand_num](iter_point);
-            if i > 20 {
+            if i > 20 && DOMAIN.is_in_domain(&iter_point) {
                 let mut histogram_guard = histogram.lock().unwrap();
                 let frame_point = histogram_guard.from_domain(iter_point, DOMAIN);
                 histogram_guard.increment_pixel(frame_point, PALETTE[rand_num]);

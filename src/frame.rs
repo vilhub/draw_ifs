@@ -2,22 +2,23 @@ use std::ops;
 
 use crate::algebra::Point2;
 
-#[derive(Debug, Copy, Clone)]
-pub struct Pixel {
-    pub r: u32,
-    pub g: u32,
-    pub b: u32,
-    pub a: u32
+pub struct Domain {
+    pub min: Point2<f32>,
+    pub max: Point2<f32>,
+}
+
+impl Domain {
+    pub fn is_in_domain(&self, point: &Point2<f32>) -> bool {
+        self.min.x <= point.x
+            && point.x < self.max.x
+            && self.min.y <= point.y
+            && point.y < self.max.y
+    }
 }
 
 pub struct Frame<T> {
     pub buffer: Vec<T>,
     pub size: Point2<u32>,
-}
-
-pub struct Domain {
-    pub min: Point2<f32>,
-    pub max: Point2<f32>,
 }
 
 impl<T> Frame<T> {
@@ -50,6 +51,14 @@ pub fn xy_to_id(x: u32, y: u32, x_size: u32) -> u32 {
     y * x_size + x
 }
 
+#[derive(Debug, Copy, Clone)]
+pub struct Pixel {
+    pub r: u32,
+    pub g: u32,
+    pub b: u32,
+    pub a: u32,
+}
+
 impl ops::Add for Pixel {
     type Output = Self;
 
@@ -58,7 +67,7 @@ impl ops::Add for Pixel {
             r: self.r + rhs.r,
             g: self.g + rhs.g,
             b: self.b + rhs.b,
-            a: self.a + rhs.a
+            a: self.a + rhs.a,
         }
     }
 }
@@ -71,7 +80,7 @@ impl ops::Div<u32> for Pixel {
             r: self.r / rhs,
             g: self.g / rhs,
             b: self.b / rhs,
-            a: self.a / rhs
+            a: self.a / rhs,
         }
     }
 }
