@@ -4,6 +4,7 @@ use crate::{
     ifs_computer::IFSComputer,
 };
 
+fn r(p: Point2<f32>) -> f32 {(p.x * p.x + p.y * p.y).sqrt()}
 
 fn f1(x: Point2<f32>) -> Point2<f32> {(x + Point2{ x: DOMAIN.min.x, y: DOMAIN.min.y }) / 2.}
 fn f2(x: Point2<f32>) -> Point2<f32> {(x + Point2{ x: DOMAIN.max.x, y: DOMAIN.min.y }) / 2.}
@@ -14,6 +15,8 @@ fn spherical(x: Point2<f32>) -> Point2<f32> {
     let r_squared = squared.x + squared.y;
     x / r_squared
 }
+
+fn horseshoe(p: Point2<f32>) -> Point2<f32> {Point2{ x: (p.x - p.y)*(p.x + p.y), y: 2. * p.x * p.y } / r(p)}
 
 fn fern_1(x: Point2<f32>) -> Point2<f32> { Matrix2{a: 0., b: 0., c: 0., d: 0.16} * x + Point2{ x: 0., y: 0. }}
 fn fern_2(x: Point2<f32>) -> Point2<f32> { Matrix2{a: 0.85, b: 0.04, c: -0.04, d: 0.85} * x + Point2{ x: 0., y: 1.6 }}
@@ -26,8 +29,8 @@ pub fn get_ifs_preset(name: &str) -> IFSComputer {
                                      weights: vec![1., 1., 1.]},
         "fern" => IFSComputer {functions: vec![fern_1, fern_2, fern_3, fern_4],
                                      weights: vec![0.01, 0.85, 0.07, 0.07]},
-        "test" => IFSComputer {functions: vec![f1, f2, f3, spherical],
-                               weights: vec![1., 1., 1., 3.]},
+        "test" => IFSComputer {functions: vec![f1, f2, spherical, horseshoe],
+                               weights: vec![1., 1., 1., 1.]},
         _ => panic!("Non-existent function name")
     }
 }
