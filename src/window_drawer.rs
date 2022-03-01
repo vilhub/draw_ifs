@@ -7,7 +7,7 @@ use minifb::{Key, ScaleMode, Window, WindowOptions};
 
 use crate::{
     constants::HEIGHT,
-    constants::{WIDTH, SUPERSAMPLING},
+    constants::{WIDTH, SUPERSAMPLING, REFRESH_TIME},
     frame::{Frame, Pixel},
     ifs_computer::{draw_on_frame, handle_key_presses, handle_key_releases, IFSComputer},
     Point2,
@@ -26,8 +26,7 @@ pub fn draw_window(ifs_computer: IFSComputer) {
     )
     .expect("Unable to create window");
 
-    // Limit to max ~60 fps update rate => 16600
-    window.limit_update_rate(Some(std::time::Duration::from_micros(33200)));
+    window.limit_update_rate(Some(std::time::Duration::from_micros(REFRESH_TIME)));
 
     let mut draw_frame = Frame {
         buffer: vec![0; WIDTH * HEIGHT],

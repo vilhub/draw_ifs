@@ -13,6 +13,9 @@ pub(crate) const DOMAIN: Domain = Domain {
 
 pub(crate) const SUPERSAMPLING: u32 = 1;
 
+// Limit to max ~60 fps update rate => 16600, 30fps => 33200
+pub(crate) const REFRESH_TIME: u64 = 66400;    
+
 pub(crate) const PALETTE: &'static [Pixel] = &[
     Pixel {
         r: 255,
